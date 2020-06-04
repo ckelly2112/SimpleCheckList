@@ -1,20 +1,89 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
+  <ion-toolbar color="primary">
+    <ion-title class="ion-text-center">
+      Simple Checklist
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding" [fullscreen]="true">
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+<form *ngIf="isAddForm" [formGroup]="addForm">
+  <ion-label>Name: </ion-label>
+  <ion-input formControlName="ItemName"
+            placeholder="Enter Item Name"
+            autofocus
+            type="text">
+          </ion-input>
+  <ion-label>Quantity: </ion-label>
+  <ion-input formControlName="ItemQty"
+             value=1
+             type="number"
+             min=1
+  ></ion-input>
+
+  <ion-button (click)="SubmitItem()">Submit</ion-button>
+  <ion-button color="warning" (click)="CancelSubmit()">Cancel</ion-button>
+</form>
+
+<div *ngIf="!isAddForm">
+  <ion-button color="primary" (click)="AddNew()">Add</ion-button>
+  <ion-button color="warning" (click)="ResetAll()">Reset All</ion-button>
+  <ion-button color="danger" (click)="DeleteAll()">Delete All</ion-button>
+</div>
+
+<div *ngIf="CheckListItems.length != 0 && !isAddForm">
+<ion-list *ngFor="let item of CheckListItems" fixed>
+  <ion-row *ngIf="!item.complete">
+    <ion-col size="4">
+      <ion-label>Description:</ion-label>
+      <br><br>
+      <ion-label color="primary"><b>{{item.name}}</b></ion-label></ion-col>
+    <ion-col size="4">
+      <ion-label>Target:</ion-label>
+      <br><br>
+      <ion-label>{{item.amount}}</ion-label></ion-col>
+    <ion-col size="4">
+      <ion-label>Completed:</ion-label>
+      <br>
+      <ion-input [(ngModel)]="item.inputAmount"
+                 type="number" 
+                 placeholder=0
+                 (ionChange)="onInputChange(item._id)"
+      ></ion-input>
+    </ion-col>
+  </ion-row>
+  <ion-row *ngIf="item.complete">
+    <ion-col size="4">
+      <ion-label>Description:</ion-label>
+      <br><br>
+      <ion-label color="shade"><s>{{item.name}}</s></ion-label></ion-col>
+    <ion-col size="4">
+      <ion-label>Target:</ion-label>
+      <br><br>
+      <ion-label>{{item.amount}}</ion-label></ion-col>
+    <ion-col size="4">
+      <ion-label>Completed:</ion-label>
+      <br>
+      <ion-input [(ngModel)]="item.inputAmount"
+                 type="number" 
+                 placeholder=0
+                 (ionChange)="onInputChange(item._id)"
+      ></ion-input>
+    </ion-col>
+  </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-button color="danger"(click)="DeleteThis(item._id)"><ion-icon name="trash"></ion-icon></ion-button>
+        </ion-col>
+        <ion-col></ion-col> <!--  Left blank intentionally -->
+        <ion-col>
+          <ion-button color="warning" (click)="ResetThis(item._id)"><ion-icon name="play-back-outline"></ion-icon></ion-button>
+        </ion-col>
+      </ion-row>
+</ion-list>
+</div>
+
+
+
 </ion-content>
